@@ -1,4 +1,4 @@
-# CHIP 8 EMULATOR
+# CHIP-8 EMULATOR
 
 This is a small project that aims to create a CHIP-8 emulator as an educational project in order to learn more about emulation.
 
@@ -11,7 +11,7 @@ Inside the `/build` folder, should include a `compile_commands.json` file inside
 You can generate your own using `bear` by doing the following:
 
 ```
-$bear -- make
+$ bear -- make
 ```
 
 Which will generate the file, then you can simply `cp` it over to your `build/` folder.
