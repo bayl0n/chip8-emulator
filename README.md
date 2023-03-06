@@ -1,6 +1,6 @@
 # CHIP-8 EMULATOR
 
-This is a small project that aims to create a CHIP-8 emulator as an educational project in order to learn more about emulation.
+A CHIP-8 emulator in C. This is aimed to be an educational project in order to learn more about emulation.
 
 ## Side note:
 
