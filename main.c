@@ -41,6 +41,8 @@ int main(int argc, char** argv) {
 
         SDL_Event e;
         bool quit = false;
+
+        // Main loop
         while (quit == false) {
             while (SDL_PollEvent(&e)) { 
                 if (e.type == SDL_QUIT) quit = true; 

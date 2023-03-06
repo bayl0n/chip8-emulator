@@ -1,0 +1,86 @@
+#include "chip8.h"
+
+
+/* 
+ #######################
+ # CHIP-8 ARCHITECTURE #
+ #######################
+ */
+
+/*
+ * Font set:
+ * 
+ **/
+unsigned char font_set[80] = {
+  0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+  0x20, 0x60, 0x20, 0x20, 0x70, // 1
+  0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+  0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+  0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+  0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+  0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+  0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+  0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+  0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+  0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+  0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+  0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+  0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+  0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+};
+
+/*
+ * Memory:
+ * Contains 4096 memory locations
+ **/
+unsigned char memory[4096] = {0};
+
+/*
+ * Data Registers:
+ * Contains 16 data registers: V0 to VF
+ **/
+unsigned char V[16] = {0};
+
+/*
+ * Index Register:
+ * Contains a value from 0x000 to 0xFFF
+ **/
+unsigned short I = 0;
+
+/*
+ * Index Register:
+ * Contains a value from 0x000 to 0xFFF
+ * Begins at memory location 0x200
+ **/
+unsigned short pc = 0x200;
+
+/*
+ * Graphics system:
+ * CHIP-8 has a black and white graphics system
+ * which has a total for 2048 pixels (64 * 32)
+ **/
+unsigned char gfx[64 * 32] = {0};
+
+/*
+ * Stack:
+ * Use to remember locations when
+ * a jump is performed.
+ **/
+unsigned short stack[16];
+
+/*
+ * Stack Pointer:
+ * Used to remember which level
+ * the stack is used.
+ **/
+unsigned short sp;
+
+/*
+ * Timers:
+ * Registers that count at 60hz. When set
+ * above 0, they decrement until they reach 0.
+ **/
+unsigned char delay_timer;
+unsigned char sound_timer;
+
