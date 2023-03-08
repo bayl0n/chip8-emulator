@@ -74,13 +74,13 @@ unsigned short stack[16];
  * Used to remember which level
  * the stack is used.
  **/
-unsigned short sp;
+unsigned short sp = 0;
 
 /*
  * Timers:
  * Registers that count at 60hz. When set
  * above 0, they decrement until they reach 0.
  **/
-unsigned char delay_timer;
-unsigned char sound_timer;
+unsigned char delay_timer = 0;
+unsigned char sound_timer = 0;
 
