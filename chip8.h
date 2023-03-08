@@ -11,7 +11,11 @@ extern unsigned short stack[16];
 extern unsigned short sp;
 extern unsigned char delay_timer;
 extern unsigned char sound_timer;
+extern unsigned char draw_flag;
+extern unsigned char sound_flag;
 
+void init_cpu();
+int load_rom(char*);
 void emulate_cycle();
 
 #endif

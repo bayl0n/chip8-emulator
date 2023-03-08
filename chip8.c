@@ -1,5 +1,13 @@
 #include "chip8.h"
 
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+
+extern int errno;
 
 /* 
  #######################
@@ -84,3 +92,53 @@ unsigned short sp = 0;
 unsigned char delay_timer = 0;
 unsigned char sound_timer = 0;
 
+
+/*
+ * Flags:
+ * Flags for draw and sound operations.
+ **/
+unsigned char draw_flag = 0;
+unsigned char sound_flag = 0;
+
+/* 
+ ################
+ # CHIP-8 LOGIC #
+ ################
+ */
+
+void init_cpu() {
+    // Seed random values from time
+    srand((unsigned int)time(NULL));
+
+    // Load font set into memory
+    memcpy(memory, font_set, sizeof(font_set));
+}
+
+int load_rom(char* filename) {
+    FILE* fp = fopen(filename, "rb");
+
+    if (fp == NULL) return errno;
+
+    struct stat st;
+    stat(filename, &st);
+    size_t fsize = st.st_size;
+
+    size_t bytes_read = fread(memory + 0x200, 1, sizeof(memory) - 0x200, fp);
+
+    if (bytes_read != fsize) {
+        return -1;
+    }
+
+    fclose(fp);
+
+    return 0;
+}
+
+void emulate_cycle() {
+    draw_flag = 0;
+    sound_flag = 0;
+
+    unsigned short op = memory[pc] << 8 | memory[pc + 1];
+
+    //TODO: switch case to handle op codes
+}

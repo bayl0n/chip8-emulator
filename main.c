@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "chip8.h"
+
 #ifndef _WIN32
 #include <SDL2/SDL.h> /* Windows SDL2 import */
 #else 
