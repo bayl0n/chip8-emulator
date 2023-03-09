@@ -117,7 +117,7 @@ void init_cpu() {
 int load_rom(char* filename) {
     FILE* fp = fopen(filename, "rb");
 
-    if (fp == NULL) return errno;
+    if (!fp) return errno;
 
     struct stat st;
     stat(filename, &st);
