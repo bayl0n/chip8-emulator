@@ -140,5 +140,19 @@ void emulate_cycle() {
 
     unsigned short op = memory[pc] << 8 | memory[pc + 1];
 
+    unsigned short x = (op & 0x0F00) >> 8;
+    unsigned short y = (op & 0x00F0) >> 4;
+
     //TODO: switch case to handle op codes
+    switch(op & 0xF000) {
+        case 0x000:
+            switch(op & 0x00FF) {
+                case 0x00E0:
+                    for(int i = 0; i < 64 * 32; i++) {
+                        gfx[i] = 0;
+                    }
+                    pc += 2;
+                    break;
+            }
+    }
 }
