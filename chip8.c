@@ -145,7 +145,7 @@ void emulate_cycle() {
 
     //TODO: switch case to handle op codes
     switch(op & 0xF000) {
-        case 0x000:
+        case 0x0000:
             switch(op & 0x00FF) {
                 case 0x00E0:
                     for(int i = 0; i < 64 * 32; i++) {
@@ -154,5 +154,37 @@ void emulate_cycle() {
                     pc += 2;
                     break;
             }
+        case 0x1000:
+            pc = op & 0x0FFF;
+            break;
+        case 0x6000:
+            V[x] = (op & 0x00FF);
+            pc += 2;
+            break;
+        case 0xA000:
+            I = (op & 0x0FFF);
+        case 0xD000:
+            draw_flag = 1;
+
+            unsigned short height = op & 0x000F;
+            unsigned short px;
+
+            V[0xF] = 0;
+
+            for (int yline = 0; yline < height; y++) {
+                px = memory[I + yline];
+
+                for (int xline = 0; xline < 8; xline++) {
+                    if ((px & (0x80 >> xline)) != 0) {
+                        if (gfx[(V[x] + xline + ((V[y] + yline) * 64))] == 1) {
+                            V[0xF] = 1;
+                        }
+                        gfx[V[x] + xline + ((V[y] + yline) * 64)] ^= 1;
+                    }
+                }
+            }
+
+            pc += 2;
+            break;
     }
 }
