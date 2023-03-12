@@ -147,6 +147,7 @@ void emulate_cycle() {
     switch(op & 0xF000) {
         case 0x0000:
             switch(op & 0x00FF) {
+                // 0x00E0: Clear screan
                 case 0x00E0:
                     for(int i = 0; i < 64 * 32; i++) {
                         gfx[i] = 0;
@@ -154,15 +155,24 @@ void emulate_cycle() {
                     pc += 2;
                     break;
             }
+        // 0x1NNN: Jump
         case 0x1000:
             pc = op & 0x0FFF;
             break;
+        // 0x6XNN: Set Register V[x]
         case 0x6000:
             V[x] = (op & 0x00FF);
             pc += 2;
             break;
+        // 0x7XNN: Add value to Register V[x]
+        case 0x7000:
+            V[x] += (op & 0x00FF);
+            pc += 2;
+            break;
+        // 0xANNN: Set index register I
         case 0xA000:
             I = (op & 0x0FFF);
+        // 0x00E0: Clear screan
         case 0xD000:
             draw_flag = 1;
 
