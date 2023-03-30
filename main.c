@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #include "chip8.h"
+#include "graphics.h"
 
 #ifndef _WIN32
 #include <SDL2/SDL.h> /* Windows SDL2 import */
@@ -9,53 +11,52 @@
 #include <SDL2/SDL.h> /* MacOS/Linux SDL2 import */
 #endif
 
-/* Set constants */
-#define WIDTH   640
-#define HEIGHT  320
-
 int main(int argc, char** argv) {
-    SDL_Window *window = NULL;
-    SDL_Surface *windowSurface = NULL;
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "SDL failed to initialise: %s\n", SDL_GetError());
+    if (argc != 2) {
+        printf("usage: emulator rom.ch8\n");
         return 1;
     }
 
-    window = SDL_CreateWindow(
-            "CHIP-8 Emulator",
-            SDL_WINDOWPOS_UNDEFINED, 
-            SDL_WINDOWPOS_UNDEFINED,
-            WIDTH,
-            HEIGHT,
-            0
-        );
+    printf("[PENDING] Initializing CHIP-8 arch...\n");
+    init_cpu();
+    printf("[OK] Done!\n");
 
-    if (window == NULL) {
-        fprintf(stderr, "SDL window failed to initialise: %s\n", SDL_GetError());
+    char* rom_filename = argv[1];
+    printf("[PENDING] Loading rom %s...\n", rom_filename);
+
+    int status = load_rom(rom_filename);
+
+    if (status == -1) {
+        printf("[FAILED] fread() failure: the return value was not equal to the rom file size.\n");
         return 1;
-    } else {
-        windowSurface = SDL_GetWindowSurface(window);
+    } else if (status != 0) {
+        perror("Error while loading rom");
+        return 1;
+    }
 
-        SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface->format, 0xFF, 0xFF, 0xFF));
+    printf("[OK] Rom loaded successfully!\n");
 
-        SDL_UpdateWindowSurface(window);
+    init_display();
 
-        SDL_Event e;
-        bool quit = false;
+    printf("[OK] Display successfully initialized.\n");
 
-        // Main loop
-        while (quit == false) {
-            while (SDL_PollEvent(&e)) { 
-                if (e.type == SDL_QUIT) quit = true; 
-            }
+    // Main loop
+    while(1) {
+        emulate_cycle();
+        sdl_ehandler(keypad);
+
+        if (should_quit()) {
+            break;
         }
 
+        if (draw_flag) {
+            draw(gfx);
+        }
+        usleep(1500);
     }
 
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
+    stop_display();
 
     return 0;
 }

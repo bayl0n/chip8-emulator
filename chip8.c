@@ -78,6 +78,11 @@ unsigned char gfx[64 * 32] = {0};
 unsigned short stack[16];
 
 /*
+ * Keypad
+ **/
+unsigned char keypad[16];
+
+/*
  * Stack Pointer:
  * Used to remember which level
  * the stack is used.
@@ -117,7 +122,7 @@ void init_cpu() {
 int load_rom(char* filename) {
     FILE* fp = fopen(filename, "rb");
 
-    if (!fp) return errno;
+    if (fp == NULL) return errno;
 
     struct stat st;
     stat(filename, &st);
@@ -154,6 +159,12 @@ void emulate_cycle() {
                     }
                     pc += 2;
                     break;
+                // 0x00EE: Returns from a subroutine
+                case 0x00EE:
+                    pc = stack[sp];
+                    sp--;
+                    pc += 2;
+                    break;
             }
         // 0x1NNN: Jump
         case 0x1000:
@@ -172,7 +183,7 @@ void emulate_cycle() {
         // 0xANNN: Set index register I
         case 0xA000:
             I = (op & 0x0FFF);
-        // 0x00E0: Clear screan
+        // 0xDXYN: Display/draw
         case 0xD000:
             draw_flag = 1;
 
